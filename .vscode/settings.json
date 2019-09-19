@@ -1,0 +1,10 @@
+{
+    "sqltools.connections": [
+        {
+            "database": "/home/marvin/Development/kicker-api/db.sqlite",
+            "dialect": "SQLite",
+            "name": "Testi"
+        }
+    ],
+    "sqltools.useNodeRuntime": true
+}
