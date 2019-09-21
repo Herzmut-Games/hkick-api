@@ -1,11 +1,12 @@
 -- Your SQL goes here
 CREATE TABLE teams (
-  player1 INTEGER REFERENCES User(id) NOT NULL,
-  player2 INTEGER REFERENCES User(id) NOT NULL,
+  id INTEGER PRIMARY KEY NOT NULL,
+  player_1 INTEGER REFERENCES User(id) NOT NULL,
+  player_2 INTEGER REFERENCES User(id) NOT NULL,
   rating INTEGER NOT NULL,
-  PRIMARY KEY (player1, player2)
+  CHECK (player_1 < player_2)
 );
 INSERT INTO
-  teams(player1, player2, rating)
+  teams(player_1, player_2, rating)
 VALUES
   (1, 2, 1000);
