@@ -6,7 +6,7 @@ pub struct Team {
     pub rating: f32,
 }
 
-#[derive(Queryable, serde_derive::Serialize)]
+#[derive(Clone, Queryable, serde_derive::Serialize)]
 pub struct Player {
     pub id: i32,
     pub first_name: String,
