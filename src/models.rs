@@ -3,7 +3,7 @@ pub struct Team {
     pub id: i32,
     pub player_1: i32,
     pub player_2: i32,
-    pub rating: i32,
+    pub rating: f32,
 }
 
 #[derive(Queryable, serde_derive::Serialize)]
@@ -12,7 +12,7 @@ pub struct Player {
     pub first_name: String,
     pub surname: String,
     pub nickname: String,
-    pub rating: i32,
+    pub rating: f32,
 }
 
 pub struct Match {

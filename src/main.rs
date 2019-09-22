@@ -10,6 +10,7 @@ extern crate rocket_contrib;
 use diesel::prelude::*;
 use rocket::Rocket;
 
+pub mod matchmaking;
 pub mod models;
 pub mod routes;
 pub mod schema;
