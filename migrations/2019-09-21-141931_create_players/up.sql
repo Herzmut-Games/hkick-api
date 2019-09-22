@@ -4,10 +4,10 @@ CREATE TABLE players (
   first_name VARCHAR NOT NULL,
   surname VARCHAR NOT NULL,
   nickname VARCHAR NOT NULL,
-  rating INTEGER NOT NULL
+  rating INTEGER NOT NULL DEFAULT (1000)
 );
 INSERT INTO
-  players(first_name, surname, nickname, rating)
+  players(first_name, surname, nickname)
 VALUES
-  ('Marvin', 'Altemeier', 'Marv', 1000),
-  ('Robert', 'Mueller', 'Robert', 1000);
+  ('Marvin', 'Altemeier', 'Marv'),
+  ('Robert', 'Mueller', 'Robert');

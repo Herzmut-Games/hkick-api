@@ -23,7 +23,11 @@ fn rocket() -> Rocket {
         .mount("/", routes![])
         .mount(
             "/players",
-            routes![routes::players::single_player, routes::players::all_players],
+            routes![
+                routes::players::single_player,
+                routes::players::all_players,
+                routes::players::create
+            ],
         )
 }
 
