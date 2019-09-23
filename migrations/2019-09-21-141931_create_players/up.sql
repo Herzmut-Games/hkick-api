@@ -10,4 +10,4 @@ INSERT INTO
   players(first_name, surname, nickname, rating)
 VALUES
   ('Marvin', 'Altemeier', 'Marv', 1200),
-  ('Robert', 'Mueller', 'Robert', 1800);
+  ('Robert', 'Mueller', 'Robert', 800);

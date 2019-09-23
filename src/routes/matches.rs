@@ -15,7 +15,7 @@ pub struct NewMatch {
 }
 
 #[post("/", format = "json", data = "<player_ids>")]
-pub fn create(conn: DbConn, player_ids: Json<[i32; 4]>) -> Result<Status, &'static str> {
+pub fn create(conn: DbConn, player_ids: Json<[i32; 4]>) -> Result<Status, Status> {
     let mut req = player_ids.into_inner();
     req.sort();
 
@@ -23,9 +23,13 @@ pub fn create(conn: DbConn, player_ids: Json<[i32; 4]>) -> Result<Status, &'stat
         Ok(ts) => ts,
         Err(e) => {
             return match e {
-                MatchmakingError::Create => Err("Error creating team"),
-                MatchmakingError::GetPlayers => Err("Could not get players from database"),
-                MatchmakingError::WrongPlayerAmount => Err("Error loading players"),
+                MatchmakingError::Create => Err(Status::new(500, "Error creating team")),
+                MatchmakingError::GetPlayers => {
+                    Err(Status::new(500, "Could not get players from database"))
+                }
+                MatchmakingError::WrongPlayerAmount => {
+                    Err(Status::new(500, "Error loading players"))
+                }
             }
         }
     };
@@ -40,6 +44,6 @@ pub fn create(conn: DbConn, player_ids: Json<[i32; 4]>) -> Result<Status, &'stat
         .execute(&*conn)
     {
         Ok(_) => Ok(Status::new(200, "Match created")),
-        Err(_) => Err("Error creating match"),
+        Err(_) => Err(Status::new(500, "Error creating match")),
     }
 }
