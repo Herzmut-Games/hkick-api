@@ -1,4 +1,4 @@
-#[derive(Queryable)]
+#[derive(Clone, Copy, Queryable, serde_derive::Serialize)]
 pub struct Team {
     pub id: i32,
     pub player_1: i32,
