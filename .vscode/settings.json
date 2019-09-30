@@ -1,10 +1,12 @@
 {
-    "sqltools.connections": [
-        {
-            "database": "/home/marvin/Development/kicker-api/db.sqlite",
-            "dialect": "SQLite",
-            "name": "Testi"
-        }
-    ],
-    "sqltools.useNodeRuntime": true
+    "remote.SSH.defaultExtensions": [
+        "visualstudioexptteam.vscodeintellicode",
+        "alexcvzz.vscode-sqlite",
+        "rust-lang.rust",
+        "swellaby.vscode-rust-test-adapter",
+        "eamodio.gitlens",
+        "ms-azuretools.vscode-docker",
+        "serayuzgur.crates",
+        "bungcip.better-toml"
+    ]
 }
