@@ -5,7 +5,7 @@ use crate::DbConn;
 
 use diesel::prelude::*;
 use rocket::http::Status;
-use rocket_contrib::json::Json;
+use rocket_contrib::json::{Json, JsonValue};
 
 #[derive(serde_derive::Deserialize, Insertable)]
 #[table_name = "matches"]
@@ -14,12 +14,26 @@ pub struct NewMatch {
     pub team_2: i32,
 }
 
+fn get_match_id(new_match: &NewMatch, conn: &SqliteConnection) -> Result<i32, MatchmakingError> {
+    match matches
+        .filter(team_1.eq(new_match.team_1))
+        .filter(team_2.eq(new_match.team_2))
+        .select(id)
+        .order(id.desc())
+        .limit(1)
+        .load(conn)
+    {
+        Ok(match_id) => Ok(*match_id.first().unwrap()),
+        Err(_) => Err(MatchmakingError::Fetch),
+    }
+}
+
 #[post("/", format = "json", data = "<player_ids>")]
-pub fn create(conn: DbConn, player_ids: Json<[i32; 4]>) -> Result<Status, Status> {
+pub fn create(conn: DbConn, player_ids: Json<[i32; 4]>) -> Result<JsonValue, Status> {
     let mut req = player_ids.into_inner();
     req.sort();
 
-    let t = match find_teams(&*conn, &req) {
+    let balanced_teams = match find_teams(&*conn, &req) {
         Ok(ts) => ts,
         Err(e) => {
             return match e {
@@ -30,20 +44,25 @@ pub fn create(conn: DbConn, player_ids: Json<[i32; 4]>) -> Result<Status, Status
                 MatchmakingError::WrongPlayerAmount => {
                     Err(Status::new(500, "Error loading players"))
                 }
+                MatchmakingError::Fetch => {
+                    panic!("Fetch error after find teams -> this should not be happening")
+                }
             }
         }
     };
 
     let new_match = NewMatch {
-        team_1: t.0.id,
-        team_2: t.1.id,
+        team_1: balanced_teams.0.id,
+        team_2: balanced_teams.1.id,
     };
 
     match diesel::insert_into(matches)
         .values(&new_match)
         .execute(&*conn)
+        .map_err(|_| MatchmakingError::Create)
+        .and_then(|_| get_match_id(&new_match, &*conn))
     {
-        Ok(_) => Ok(Status::new(200, "Match created")),
+        Ok(matchid) => Ok(json!(matchid)),
         Err(_) => Err(Status::new(500, "Error creating match")),
     }
 }

@@ -9,6 +9,7 @@ use diesel::SqliteConnection;
 
 pub enum MatchmakingError {
     Create,
+    Fetch,
     GetPlayers,
     WrongPlayerAmount,
 }
