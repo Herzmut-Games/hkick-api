@@ -1,12 +1,9 @@
 {
-    "remote.SSH.defaultExtensions": [
-        "visualstudioexptteam.vscodeintellicode",
+    "recommendations": [
         "alexcvzz.vscode-sqlite",
         "rust-lang.rust",
         "swellaby.vscode-rust-test-adapter",
-        "eamodio.gitlens",
-        "ms-azuretools.vscode-docker",
         "serayuzgur.crates",
         "bungcip.better-toml"
-    ]
+    ],
 }
