@@ -13,7 +13,7 @@ serde_json = "1.0.40"
 serde_derive = "1.0.101"
 diesel = { version = "1.4.2", features = ["sqlite", "chrono"] }
 diesel_migrations = "1.4.0"
-chrono = "0.4.9"
+chrono = { version = "0.4.9", features = ["serde"] }
 skill-rating = "0.0.1"
 
 [dependencies.rocket_contrib]

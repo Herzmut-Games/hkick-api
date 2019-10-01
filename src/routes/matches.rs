@@ -1,4 +1,5 @@
 use crate::matchmaking::*;
+use crate::models::Match;
 use crate::schema::matches;
 use crate::schema::matches::dsl::*;
 use crate::DbConn;
@@ -65,4 +66,9 @@ pub fn create(conn: DbConn, player_ids: Json<[i32; 4]>) -> Result<JsonValue, Sta
         Ok(matchid) => Ok(json!(matchid)),
         Err(_) => Err(Status::new(500, "Error creating match")),
     }
+}
+
+#[get("/")]
+pub fn all_matches(conn: DbConn) -> JsonValue {
+    json!(matches.load::<Match>(&*conn).unwrap())
 }

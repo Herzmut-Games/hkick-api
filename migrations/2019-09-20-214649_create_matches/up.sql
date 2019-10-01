@@ -1,8 +1,0 @@
--- Your SQL goes here
-CREATE TABLE matches (
-  id INTEGER PRIMARY KEY NOT NULL,
-  team_1 INTEGER REFERENCES Team(id) NOT NULL,
-  team_2 INTEGER REFERENCES Team(id) NOT NULL,
-  timestamp DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
-  CHECK (team_1 != team_2)
-)

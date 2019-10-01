@@ -36,6 +36,8 @@ table! {
     }
 }
 
+joinable!(games -> matches (match_id));
+
 allow_tables_to_appear_in_same_query!(
     games,
     matches,

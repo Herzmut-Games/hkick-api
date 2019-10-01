@@ -30,7 +30,10 @@ fn rocket() -> Rocket {
                 routes::players::create
             ],
         )
-        .mount("/matches", routes![routes::matches::create])
+        .mount(
+            "/matches",
+            routes![routes::matches::all_matches, routes::matches::create],
+        )
 }
 
 fn main() {

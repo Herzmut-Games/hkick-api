@@ -15,6 +15,7 @@ pub struct Player {
     pub rating: f32,
 }
 
+#[derive(Clone, Queryable, serde_derive::Serialize)]
 pub struct Match {
     pub id: i32,
     pub team_1: i32,
