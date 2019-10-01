@@ -1,5 +1,4 @@
-use crate::models::*;
-use crate::schema::players;
+use crate::models::players::*;
 use crate::schema::players::dsl::*;
 use crate::DbConn;
 
@@ -20,14 +19,6 @@ pub fn single_player(conn: DbConn, player_id: i32) -> Result<JsonValue, Status> 
         1 => Ok(json!(p.first())),
         _ => Err(Status::new(404, "Player not found")),
     }
-}
-
-#[derive(serde_derive::Deserialize, Insertable)]
-#[table_name = "players"]
-pub struct NewPlayer {
-    pub first_name: String,
-    pub surname: String,
-    pub nickname: String,
 }
 
 #[post("/", format = "json", data = "<player_data>")]

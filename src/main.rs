@@ -12,6 +12,7 @@ use rocket::Rocket;
 
 pub mod matchmaking;
 pub mod models;
+pub mod rating;
 pub mod routes;
 pub mod schema;
 
@@ -32,7 +33,11 @@ fn rocket() -> Rocket {
         )
         .mount(
             "/matches",
-            routes![routes::matches::all_matches, routes::matches::create],
+            routes![
+                routes::matches::all_matches,
+                routes::matches::create,
+                routes::games::place_game
+            ],
         )
 }
 

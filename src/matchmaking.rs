@@ -1,8 +1,8 @@
-use crate::models::*;
+use crate::models::players::*;
+use crate::models::teams::*;
 use crate::schema::players::dsl::id as players_id;
 use crate::schema::players::dsl::rating as players_rating;
 use crate::schema::players::dsl::*;
-use crate::schema::teams;
 use crate::schema::teams::dsl::*;
 use diesel::prelude::*;
 use diesel::SqliteConnection;
@@ -12,31 +12,6 @@ pub enum MatchmakingError {
     Fetch,
     GetPlayers,
     WrongPlayerAmount,
-}
-
-#[derive(serde_derive::Deserialize, Insertable, Debug, PartialEq)]
-#[table_name = "teams"]
-pub struct NewTeam {
-    pub player_1: i32,
-    pub player_2: i32,
-}
-
-impl NewTeam {
-    pub fn new(p_1: i32, p_2: i32) -> NewTeam {
-        // By convention the id of player_1 has to be lower than the id of player_2
-        // to ensure that we do not have duplicate teams in the database
-        if p_1 < p_2 {
-            NewTeam {
-                player_1: p_1,
-                player_2: p_2,
-            }
-        } else {
-            NewTeam {
-                player_1: p_2,
-                player_2: p_1,
-            }
-        }
-    }
 }
 
 fn create_team(conn: &SqliteConnection, new_team: NewTeam) -> Result<Team, MatchmakingError> {
@@ -125,28 +100,28 @@ mod test {
                 first_name: String::new(),
                 surname: String::new(),
                 nickname: String::new(),
-                rating: 800.0,
+                rating: 800,
             },
             Player {
                 id: 2,
                 first_name: String::new(),
                 surname: String::new(),
                 nickname: String::new(),
-                rating: 1200.0,
+                rating: 1200,
             },
             Player {
                 id: 3,
                 first_name: String::new(),
                 surname: String::new(),
                 nickname: String::new(),
-                rating: 1100.0,
+                rating: 1100,
             },
             Player {
                 id: 4,
                 first_name: String::new(),
                 surname: String::new(),
                 nickname: String::new(),
-                rating: 700.0,
+                rating: 700,
             },
         ];
 

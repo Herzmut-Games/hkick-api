@@ -1,19 +1,11 @@
 use crate::matchmaking::*;
-use crate::models::Match;
-use crate::schema::matches;
+use crate::models::matches::*;
 use crate::schema::matches::dsl::*;
 use crate::DbConn;
 
 use diesel::prelude::*;
 use rocket::http::Status;
 use rocket_contrib::json::{Json, JsonValue};
-
-#[derive(serde_derive::Deserialize, Insertable)]
-#[table_name = "matches"]
-pub struct NewMatch {
-    pub team_1: i32,
-    pub team_2: i32,
-}
 
 fn get_match_id(new_match: &NewMatch, conn: &SqliteConnection) -> Result<i32, MatchmakingError> {
     match matches
@@ -71,4 +63,9 @@ pub fn create(conn: DbConn, player_ids: Json<[i32; 4]>) -> Result<JsonValue, Sta
 #[get("/")]
 pub fn all_matches(conn: DbConn) -> JsonValue {
     json!(matches.load::<Match>(&*conn).unwrap())
+}
+
+#[get("/<id_match>/details")]
+pub fn match_details(conn: DbConn, id_match: i32) -> Result<JsonValue, Status> {
+    panic!("Not implemented")
 }

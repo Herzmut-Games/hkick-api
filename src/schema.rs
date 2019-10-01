@@ -23,7 +23,7 @@ table! {
         first_name -> Text,
         surname -> Text,
         nickname -> Text,
-        rating -> Float,
+        rating -> Integer,
     }
 }
 
@@ -32,7 +32,7 @@ table! {
         id -> Integer,
         player_1 -> Integer,
         player_2 -> Integer,
-        rating -> Float,
+        rating -> Integer,
     }
 }
 
