@@ -1,6 +1,8 @@
-use crate::{
-    errors::ApiError, matchmaking::*, models::matches::*, schema::matches::dsl::*, DbConn,
-};
+use crate::errors::ApiError;
+use crate::matchmaking::*;
+use crate::models::matches::*;
+use crate::schema::matches::dsl::*;
+use crate::DbConn;
 
 use diesel::prelude::*;
 use rocket_contrib::json::{Json, JsonValue};

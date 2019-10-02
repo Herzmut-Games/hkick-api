@@ -1,8 +1,6 @@
-use crate::{
-    errors::ApiError,
-    models::players::*,
-    schema::{players::dsl::*, teams},
-};
+use crate::errors::ApiError;
+use crate::models::players::*;
+use crate::schema::{players::dsl::*, teams};
 
 use diesel::{prelude::*, SqliteConnection};
 

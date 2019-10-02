@@ -1,11 +1,7 @@
-use crate::{
-    errors::ApiError,
-    models::{players::*, teams::*},
-    schema::{
-        players::dsl::{id as players_id, rating as players_rating, *},
-        teams::dsl::*,
-    },
-};
+use crate::errors::ApiError;
+use crate::models::{players::*, teams::*};
+use crate::schema::players::dsl::{id as players_id, rating as players_rating, *};
+use crate::schema::teams::dsl::*;
 
 use diesel::{prelude::*, SqliteConnection};
 
