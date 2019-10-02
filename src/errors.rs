@@ -8,11 +8,11 @@ use std::io::Cursor;
 #[derive(Debug, Clone)]
 pub struct ApiError {
     reason: &'static str,
-    status: i16,
+    status: u16,
 }
 
 impl ApiError {
-    pub fn new(reason: &'static str, status: i16) -> ApiError {
+    pub fn new(reason: &'static str, status: u16) -> ApiError {
         ApiError { reason, status }
     }
 }
@@ -32,7 +32,7 @@ impl error::Error for ApiError {
 impl<'r> Responder<'r> for ApiError {
     fn respond_to(self, _: &Request) -> response::Result<'r> {
         Response::build()
-            .status(Status::raw(500))
+            .status(Status::raw(self.status))
             .sized_body(Cursor::new(format!("{}", self)))
             .ok()
     }
