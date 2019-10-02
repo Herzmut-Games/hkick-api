@@ -1,7 +1,4 @@
-use crate::errors::ApiError;
-use crate::models::players::*;
-use crate::schema::players::dsl::*;
-use crate::DbConn;
+use crate::{errors::ApiError, models::players::*, schema::players::dsl::*, DbConn};
 
 use diesel::prelude::*;
 use rocket::http::Status;

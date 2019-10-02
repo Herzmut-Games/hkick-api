@@ -1,10 +1,12 @@
-use crate::models::players::*;
-use crate::models::teams::*;
+use crate::models::{players::*, teams::*};
 use skill_rating::elo;
 
 const K_FACTOR: u32 = 32;
 
-pub fn calc_team_rating(mut winner: Team, mut loser: Team) -> (Team, Team) {
+pub fn update_team_ratings(winner: Team, loser: Team) {
+}
+
+fn calc_team_rating(mut winner: Team, mut loser: Team) -> (Team, Team) {
     let (winner_rating, loser_rating) =
         elo::game(winner.rating, loser.rating, elo::WIN, K_FACTOR, K_FACTOR);
 
@@ -14,7 +16,7 @@ pub fn calc_team_rating(mut winner: Team, mut loser: Team) -> (Team, Team) {
     (winner, loser)
 }
 
-pub fn calc_player_rating(mut player: Player, result: f32, opponents: (Player, Player)) -> Player {
+fn calc_player_rating(mut player: Player, result: f32, opponents: (Player, Player)) -> Player {
     let average_rating: i32 = (opponents.0.rating + opponents.1.rating) / 2;
     let (player_rating, _) = elo::game(player.rating, average_rating, result, K_FACTOR, K_FACTOR);
 

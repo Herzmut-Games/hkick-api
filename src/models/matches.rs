@@ -1,10 +1,10 @@
-use crate::errors::ApiError;
-use crate::models::teams::*;
-use crate::schema::matches;
-use crate::schema::teams::dsl::*;
+use crate::{
+    errors::ApiError,
+    models::teams::*,
+    schema::{matches, teams::dsl::*},
+};
 
-use diesel::prelude::*;
-use diesel::SqliteConnection;
+use diesel::{prelude::*, SqliteConnection};
 
 #[derive(serde_derive::Deserialize, Clone, Queryable, serde_derive::Serialize)]
 pub struct Match {

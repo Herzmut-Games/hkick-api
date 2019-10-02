@@ -1,9 +1,9 @@
-use rocket::http::Status;
-use rocket::request::Request;
-use rocket::response::{self, Responder, Response};
-use std::error;
-use std::fmt;
-use std::io::Cursor;
+use rocket::{
+    http::Status,
+    request::Request,
+    response::{self, Responder, Response},
+};
+use std::{error, fmt, io::Cursor};
 
 #[derive(Debug, Clone)]
 pub struct ApiError {

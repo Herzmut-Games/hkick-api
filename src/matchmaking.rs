@@ -1,13 +1,13 @@
-use crate::errors::ApiError;
-use crate::models::players::*;
-use crate::models::teams::*;
-use crate::schema::players::dsl::id as players_id;
-use crate::schema::players::dsl::rating as players_rating;
-use crate::schema::players::dsl::*;
-use crate::schema::teams::dsl::*;
+use crate::{
+    errors::ApiError,
+    models::{players::*, teams::*},
+    schema::{
+        players::dsl::{id as players_id, rating as players_rating, *},
+        teams::dsl::*,
+    },
+};
 
-use diesel::prelude::*;
-use diesel::SqliteConnection;
+use diesel::{prelude::*, SqliteConnection};
 
 fn create_team(conn: &SqliteConnection, new_team: NewTeam) -> Result<Team, ApiError> {
     match diesel::insert_into(teams).values(&new_team).execute(&*conn) {

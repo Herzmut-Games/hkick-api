@@ -1,6 +1,4 @@
-use crate::models::games::*;
-use crate::schema::games::dsl::*;
-use crate::DbConn;
+use crate::{models::games::*, schema::games::dsl::*, DbConn};
 
 use diesel::prelude::*;
 use rocket::http::Status;
