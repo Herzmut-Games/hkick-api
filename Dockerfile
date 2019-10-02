@@ -1,4 +1,4 @@
-FROM rustlang/rust:nightly as builder
+FROM docker.io/rustlang/rust:nightly as builder
 
 RUN apt-get update \
     && apt-get install libsqlite3-dev -y \
