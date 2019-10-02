@@ -13,7 +13,10 @@ pub fn all_players(conn: DbConn) -> JsonValue {
 }
 
 #[get("/<player_id>")]
-pub fn single_player(conn: DbConn, player_id: i32) -> Result<JsonValue, ApiError> {
+pub fn single_player(
+    conn: DbConn,
+    player_id: i32,
+) -> Result<JsonValue, ApiError> {
     let p = players.find(player_id).load::<Player>(&*conn).unwrap();
 
     match p.len() {
@@ -23,7 +26,10 @@ pub fn single_player(conn: DbConn, player_id: i32) -> Result<JsonValue, ApiError
 }
 
 #[post("/", format = "json", data = "<player_data>")]
-pub fn create(conn: DbConn, player_data: Json<NewPlayer>) -> Result<Status, ApiError> {
+pub fn create(
+    conn: DbConn,
+    player_data: Json<NewPlayer>,
+) -> Result<Status, ApiError> {
     match diesel::insert_into(players)
         .values(&player_data.into_inner())
         .execute(&*conn)

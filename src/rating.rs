@@ -1,9 +1,33 @@
-use crate::models::{players::*, teams::*};
+use crate::errors::ApiError;
+use crate::models::players::*;
+use crate::models::teams::*;
+use crate::schema::teams::dsl::*;
+
+use diesel::prelude::*;
+use diesel::SqliteConnection;
 use skill_rating::elo;
 
 const K_FACTOR: u32 = 32;
 
-pub fn update_team_ratings(winner: Team, loser: Team) {
+pub fn update_team_ratings(
+    winner: Team,
+    loser: Team,
+    conn: &SqliteConnection,
+) -> Result<usize, ApiError> {
+    let (winner, loser) = calc_team_rating(winner, loser);
+
+    update_team_rating(winner, conn)
+        .and_then(|_| update_team_rating(loser, conn))
+}
+
+fn update_team_rating(
+    team: Team,
+    conn: &SqliteConnection,
+) -> Result<usize, ApiError> {
+    diesel::update(teams.filter(id.eq(team.id)))
+        .set(rating.eq(team.rating))
+        .execute(conn)
+        .map_err(|_| ApiError::new("Could not update team rating", 500))
 }
 
 fn calc_team_rating(mut winner: Team, mut loser: Team) -> (Team, Team) {
@@ -16,9 +40,14 @@ fn calc_team_rating(mut winner: Team, mut loser: Team) -> (Team, Team) {
     (winner, loser)
 }
 
-fn calc_player_rating(mut player: Player, result: f32, opponents: (Player, Player)) -> Player {
+fn calc_player_rating(
+    mut player: Player,
+    result: f32,
+    opponents: (Player, Player),
+) -> Player {
     let average_rating: i32 = (opponents.0.rating + opponents.1.rating) / 2;
-    let (player_rating, _) = elo::game(player.rating, average_rating, result, K_FACTOR, K_FACTOR);
+    let (player_rating, _) =
+        elo::game(player.rating, average_rating, result, K_FACTOR, K_FACTOR);
 
     player.rating = player_rating;
 

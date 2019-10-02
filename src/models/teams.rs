@@ -13,14 +13,20 @@ pub struct Team {
 }
 
 impl Team {
-    pub fn get_player_1(&self, conn: &SqliteConnection) -> Result<Player, ApiError> {
+    pub fn get_player_1(
+        &self,
+        conn: &SqliteConnection,
+    ) -> Result<Player, ApiError> {
         players
             .find(self.player_1)
             .first(conn)
             .map_err(|_| ApiError::new("Could not find player_1 of team", 404))
     }
 
-    pub fn get_player_2(&self, conn: &SqliteConnection) -> Result<Player, ApiError> {
+    pub fn get_player_2(
+        &self,
+        conn: &SqliteConnection,
+    ) -> Result<Player, ApiError> {
         players
             .find(self.player_2)
             .first(conn)

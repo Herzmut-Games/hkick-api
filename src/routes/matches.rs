@@ -7,7 +7,10 @@ use crate::DbConn;
 use diesel::prelude::*;
 use rocket_contrib::json::{Json, JsonValue};
 
-fn get_match_id(new_match: &NewMatch, conn: &SqliteConnection) -> Result<i32, ApiError> {
+fn get_match_id(
+    new_match: &NewMatch,
+    conn: &SqliteConnection,
+) -> Result<i32, ApiError> {
     match matches
         .filter(team_1.eq(new_match.team_1))
         .filter(team_2.eq(new_match.team_2))
@@ -22,7 +25,10 @@ fn get_match_id(new_match: &NewMatch, conn: &SqliteConnection) -> Result<i32, Ap
 }
 
 #[post("/", format = "json", data = "<player_ids>")]
-pub fn create(conn: DbConn, player_ids: Json<[i32; 4]>) -> Result<JsonValue, ApiError> {
+pub fn create(
+    conn: DbConn,
+    player_ids: Json<[i32; 4]>,
+) -> Result<JsonValue, ApiError> {
     let mut req = player_ids.into_inner();
     req.sort();
 
