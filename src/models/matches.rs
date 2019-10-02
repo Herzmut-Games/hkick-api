@@ -1,5 +1,10 @@
-use crate::models::games::*;
+use crate::errors::ApiError;
+use crate::models::teams::*;
 use crate::schema::matches;
+use crate::schema::teams::dsl::*;
+
+use diesel::prelude::*;
+use diesel::SqliteConnection;
 
 #[derive(serde_derive::Deserialize, Clone, Queryable, serde_derive::Serialize)]
 pub struct Match {
@@ -9,10 +14,20 @@ pub struct Match {
     pub timestamp: chrono::NaiveDateTime,
 }
 
-#[derive(serde_derive::Deserialize)]
-pub struct MatchDetails {
-    pub match_data: Match,
-    pub game_data: Vec<Game>,
+impl Match {
+    pub fn get_team_1(&self, conn: &SqliteConnection) -> Result<Team, ApiError> {
+        teams
+            .find(self.team_1)
+            .first(conn)
+            .map_err(|_| ApiError::new("Could not find team_1 of match", 404))
+    }
+
+    pub fn get_team_2(&self, conn: &SqliteConnection) -> Result<Team, ApiError> {
+        teams
+            .find(self.team_2)
+            .first(conn)
+            .map_err(|_| ApiError::new("Could not find team_2 of match", 404))
+    }
 }
 
 #[derive(serde_derive::Deserialize, Insertable)]

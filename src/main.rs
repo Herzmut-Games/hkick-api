@@ -10,6 +10,7 @@ extern crate rocket_contrib;
 use diesel::prelude::*;
 use rocket::Rocket;
 
+pub mod errors;
 pub mod matchmaking;
 pub mod models;
 pub mod rating;

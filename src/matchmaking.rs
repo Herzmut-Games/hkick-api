@@ -1,33 +1,25 @@
+use crate::errors::ApiError;
 use crate::models::players::*;
 use crate::models::teams::*;
 use crate::schema::players::dsl::id as players_id;
 use crate::schema::players::dsl::rating as players_rating;
 use crate::schema::players::dsl::*;
 use crate::schema::teams::dsl::*;
+
 use diesel::prelude::*;
 use diesel::SqliteConnection;
 
-pub enum MatchmakingError {
-    Create,
-    Fetch,
-    GetPlayers,
-    WrongPlayerAmount,
-}
-
-fn create_team(conn: &SqliteConnection, new_team: NewTeam) -> Result<Team, MatchmakingError> {
+fn create_team(conn: &SqliteConnection, new_team: NewTeam) -> Result<Team, ApiError> {
     match diesel::insert_into(teams).values(&new_team).execute(&*conn) {
         Ok(_) => Ok(get_or_create_team(conn, new_team)?.to_owned()),
         Err(e) => {
             println!("SQL Error: {}", e);
-            Err(MatchmakingError::Create)
+            Err(ApiError::new("Could not create team", 500))
         }
     }
 }
 
-fn get_or_create_team(
-    conn: &SqliteConnection,
-    new_team: NewTeam,
-) -> Result<Team, MatchmakingError> {
+fn get_or_create_team(conn: &SqliteConnection, new_team: NewTeam) -> Result<Team, ApiError> {
     let t = teams
         .filter(player_1.eq(new_team.player_1))
         .filter(player_2.eq(new_team.player_2))
@@ -56,7 +48,7 @@ fn balance_teams(unordered_players: [Player; 4]) -> (NewTeam, NewTeam) {
 pub fn find_teams(
     conn: &SqliteConnection,
     player_ids: &[i32; 4],
-) -> Result<(Team, Team), MatchmakingError> {
+) -> Result<(Team, Team), ApiError> {
     let players_to_match = match players
         .filter(players_id.eq(player_ids[0]))
         .or_filter(players_id.eq(player_ids[1]))
@@ -67,7 +59,7 @@ pub fn find_teams(
     {
         Err(e) => {
             println!("SQL Error: {}", e);
-            return Err(MatchmakingError::GetPlayers);
+            return Err(ApiError::new("Could not get all players", 500));
         }
         Ok(ps) => ps,
     };
@@ -79,7 +71,7 @@ pub fn find_teams(
             players_to_match[2].clone(),
             players_to_match[3].clone(),
         ]),
-        _ => return Err(MatchmakingError::WrongPlayerAmount),
+        _ => return Err(ApiError::new("Did not get four players", 500)),
     };
 
     Ok((

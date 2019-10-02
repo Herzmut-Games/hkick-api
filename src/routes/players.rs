@@ -1,3 +1,4 @@
+use crate::errors::ApiError;
 use crate::models::players::*;
 use crate::schema::players::dsl::*;
 use crate::DbConn;
@@ -12,22 +13,22 @@ pub fn all_players(conn: DbConn) -> JsonValue {
 }
 
 #[get("/<player_id>")]
-pub fn single_player(conn: DbConn, player_id: i32) -> Result<JsonValue, Status> {
+pub fn single_player(conn: DbConn, player_id: i32) -> Result<JsonValue, ApiError> {
     let p = players.find(player_id).load::<Player>(&*conn).unwrap();
 
     match p.len() {
         1 => Ok(json!(p.first())),
-        _ => Err(Status::new(404, "Player not found")),
+        _ => Err(ApiError::new("Player not found", 404)),
     }
 }
 
 #[post("/", format = "json", data = "<player_data>")]
-pub fn create(conn: DbConn, player_data: Json<NewPlayer>) -> Result<Status, diesel::result::Error> {
+pub fn create(conn: DbConn, player_data: Json<NewPlayer>) -> Result<Status, ApiError> {
     match diesel::insert_into(players)
         .values(&player_data.into_inner())
         .execute(&*conn)
     {
         Ok(_) => Ok(Status::new(200, "User created")),
-        Err(e) => Err(e),
+        Err(_) => Err(ApiError::new("Could not create player", 500)),
     }
 }
