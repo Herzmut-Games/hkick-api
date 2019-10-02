@@ -17,12 +17,12 @@ RUN mkdir src/ \
 
 COPY . .
 RUN cargo build --release
-RUN DATABASE_URL=./db.sqlite diesel database setup
+RUN DATABASE_URL=./database/db.sqlite diesel database setup
 
-FROM debian:jessie-slim
+FROM docker.io/debian:jessie-slim
 WORKDIR /usr/src/app
 RUN apt-get update \
     && apt-get install libsqlite3-dev -y
 COPY --from=builder /usr/src/app/target/release/kicker-api /usr/local/bin/kicker-api
-COPY --from=builder /usr/src/app/db.sqlite ./db.sqlite
+COPY --from=builder /usr/src/app/database ./database
 CMD ["kicker-api"]
