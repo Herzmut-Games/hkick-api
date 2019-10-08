@@ -1,8 +1,13 @@
 use crate::errors::ApiError;
 use crate::models::players::*;
-use crate::schema::{players::dsl::*, teams};
+use crate::schema::players::dsl::*;
+use crate::schema::teams as teams_schema;
+use crate::schema::teams::dsl::{
+    id as teams_id, rating as teams_rating, teams,
+};
 
-use diesel::{prelude::*, SqliteConnection};
+use diesel::prelude::*;
+use diesel::SqliteConnection;
 
 #[derive(Clone, Copy, Queryable, serde_derive::Serialize)]
 pub struct Team {
@@ -13,7 +18,7 @@ pub struct Team {
 }
 
 impl Team {
-    pub fn get_player_1(
+    fn get_player_1(
         &self,
         conn: &SqliteConnection,
     ) -> Result<Player, ApiError> {
@@ -23,7 +28,7 @@ impl Team {
             .map_err(|_| ApiError::new("Could not find player_1 of team", 404))
     }
 
-    pub fn get_player_2(
+    fn get_player_2(
         &self,
         conn: &SqliteConnection,
     ) -> Result<Player, ApiError> {
@@ -32,10 +37,30 @@ impl Team {
             .first(conn)
             .map_err(|_| ApiError::new("Could not find player_2 of team", 404))
     }
+
+    pub fn get_players(
+        &self,
+        conn: &SqliteConnection,
+    ) -> Result<[Player; 2], ApiError> {
+        let player_1 = self.get_player_1(conn)?;
+        let player_2 = self.get_player_2(conn)?;
+
+        Ok([player_1, player_2])
+    }
+
+    pub fn update_in_db(
+        &self,
+        conn: &SqliteConnection,
+    ) -> Result<usize, ApiError> {
+        diesel::update(teams.filter(teams_id.eq(self.id)))
+            .set(teams_rating.eq(self.rating))
+            .execute(conn)
+            .map_err(|_| ApiError::new("Could not update team rating", 500))
+    }
 }
 
 #[derive(serde_derive::Deserialize, Insertable, Debug, PartialEq)]
-#[table_name = "teams"]
+#[table_name = "teams_schema"]
 pub struct NewTeam {
     pub player_1: i32,
     pub player_2: i32,

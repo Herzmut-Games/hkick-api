@@ -7,6 +7,7 @@
 use diesel::prelude::*;
 use rocket::Rocket;
 
+pub mod elo;
 pub mod errors;
 pub mod matchmaking;
 pub mod models;
