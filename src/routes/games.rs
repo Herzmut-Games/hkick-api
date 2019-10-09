@@ -32,6 +32,7 @@ pub fn place_game(
         .and_then(|inserted_game: Game| {
             let (winner, loser) = inserted_game.get_winner_and_loser(&*conn)?;
             update_team_ratings(winner, loser, &*conn)
+                .and_then(|_| update_player_ratings(winner, loser, &*conn))
                 .and_then(|_| Ok(Status::raw(200)))
         })
 }

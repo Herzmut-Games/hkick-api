@@ -32,11 +32,7 @@ pub fn create(
     let mut req = player_ids.into_inner();
     req.sort();
 
-    let balanced_teams = match find_teams(&*conn, &req) {
-        Ok(ts) => ts,
-        Err(e) => return Err(e),
-    };
-
+    let balanced_teams = find_teams(&*conn, &req)?;
     let new_match = NewMatch {
         team_1: balanced_teams.0.id,
         team_2: balanced_teams.1.id,
