@@ -1,40 +1,27 @@
-use crate::elo;
+use crate::elo::game;
+use crate::elo::GameResult;
 use crate::errors::ApiError;
 use crate::models::players::*;
 use crate::models::teams::*;
-use crate::schema::teams::dsl::*;
-
-use diesel::prelude::*;
 use diesel::SqliteConnection;
-
-const K_FACTOR: u32 = 32;
 
 pub fn update_team_ratings(
     winner: Team,
     loser: Team,
     conn: &SqliteConnection,
-) -> Result<usize, ApiError> {
+) -> Result<(), ApiError> {
     let (winner, loser) = calc_team_rating(winner, loser);
 
-    update_team_rating(&winner, conn)
-        .and_then(|_| update_team_rating(&loser, conn))
-}
+    winner
+        .update_in_db(conn)
+        .and_then(|_| loser.update_in_db(conn))?;
 
-fn update_team_rating(
-    team: &Team,
-    conn: &SqliteConnection,
-) -> Result<usize, ApiError> {
-    panic!()
+    Ok(())
 }
 
 fn calc_team_rating(mut winner: Team, mut loser: Team) -> (Team, Team) {
-    let (winner_rating, loser_rating) = elo::game(
-        winner.rating,
-        loser.rating,
-        elo::GameResult::Win,
-        K_FACTOR,
-        K_FACTOR,
-    );
+    let (winner_rating, loser_rating) =
+        game(winner.rating, loser.rating, GameResult::Win);
 
     winner.rating = winner_rating;
     loser.rating = loser_rating;
@@ -52,15 +39,13 @@ pub fn update_player_ratings(
 
     for p in winning_players.iter() {
         let mut p = p.clone();
-        p.rating =
-            calc_player_rating(&p, elo::GameResult::Win, &losing_players);
+        p.rating = calc_player_rating(&p, GameResult::Win, &losing_players);
         p.update_in_db(conn)?;
     }
 
     for p in losing_players.iter() {
         let mut p = p.clone();
-        p.rating =
-            calc_player_rating(&p, elo::GameResult::Loss, &winning_players);
+        p.rating = calc_player_rating(&p, GameResult::Loss, &winning_players);
         p.update_in_db(conn)?;
     }
 
@@ -69,12 +54,11 @@ pub fn update_player_ratings(
 
 fn calc_player_rating(
     player: &Player,
-    result: elo::GameResult,
+    result: GameResult,
     opponents: &[Player; 2],
 ) -> i32 {
     let average_rating: i32 = (opponents[0].rating + opponents[1].rating) / 2;
-    let (player_rating, _) =
-        elo::game(player.rating, average_rating, result, K_FACTOR, K_FACTOR);
+    let (player_rating, _) = game(player.rating, average_rating, result);
 
     player_rating
 }
@@ -133,7 +117,7 @@ mod test {
         ];
 
         let winner_rating =
-            calc_player_rating(&winner, elo::GameResult::Win, &opponents);
+            calc_player_rating(&winner, GameResult::Win, &opponents);
 
         assert_eq!(winner_rating, 1016);
     }
@@ -166,7 +150,7 @@ mod test {
         ];
 
         let winner_rating =
-            calc_player_rating(&winner, elo::GameResult::Loss, &opponents);
+            calc_player_rating(&winner, GameResult::Loss, &opponents);
 
         assert_eq!(winner_rating, 984);
     }

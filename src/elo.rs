@@ -1,3 +1,5 @@
+const K_FACTOR: f32 = 32_f32;
+
 pub enum GameResult {
     Win,
     Draw,
@@ -16,8 +18,8 @@ impl GameResult {
     }
 }
 
-fn rating_change(k: u32, score: GameResult, exp_score: f32) -> i32 {
-    (k as f32 * (score.get_val() - exp_score)) as i32
+fn rating_change(score: GameResult, exp_score: f32) -> i32 {
+    (K_FACTOR * (score.get_val() - exp_score)) as i32
 }
 
 pub fn expected_score(rating_a: i32, rating_b: i32) -> f32 {
@@ -28,16 +30,14 @@ pub fn game(
     rating_a: i32,
     rating_b: i32,
     game_score: GameResult,
-    k_a: u32,
-    k_b: u32,
 ) -> (i32, i32) {
     let s_b = GameResult::Score(1_f32 - game_score.get_val());
 
     let expected_a = expected_score(rating_a, rating_b);
     let expected_b = 1_f32 - expected_a;
 
-    let new_a = rating_a + rating_change(k_a, game_score, expected_a);
-    let new_b = rating_b + rating_change(k_b, s_b, expected_b);
+    let new_a = rating_a + rating_change(game_score, expected_a);
+    let new_b = rating_b + rating_change(s_b, expected_b);
 
     (new_a, new_b)
 }
@@ -51,7 +51,7 @@ mod test {
         let john = 1700;
         let paul = 1800;
 
-        let (john, paul) = game(paul, john, GameResult::Win, 32, 32);
+        let (john, paul) = game(paul, john, GameResult::Win);
         assert_eq!(john, 1811);
         assert_eq!(paul, 1689);
     }
