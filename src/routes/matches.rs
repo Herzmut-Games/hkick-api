@@ -44,7 +44,7 @@ pub fn create(
         .map_err(|_| ApiError::new("Could not create match", 500))
         .and_then(|_| get_match_id(&new_match, &*conn))
     {
-        Ok(matchid) => Ok(json!(matchid)),
+        Ok(matchid) => Ok(json!({ "id": matchid })),
         Err(e) => Err(e),
     }
 }

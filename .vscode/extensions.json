@@ -4,6 +4,8 @@
         "rust-lang.rust",
         "swellaby.vscode-rust-test-adapter",
         "serayuzgur.crates",
-        "bungcip.better-toml"
+        "bungcip.better-toml",
+        "vncz.vscode-apielements",
+        "develiteio.api-blueprint-viewer"
     ],
 }

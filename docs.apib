@@ -1,0 +1,83 @@
+FORMAT: 1A
+
+# Kicker-API
+
+This API provides an interface for creating matches and submitting games.
+
+# Group Players
+
+Resources related to Players
+
+## Players collection [/players]
+
+### List all players [GET]
++ Response 200 (application/json)
+    [
+        {
+            "id": 7,
+            "first_name": "James",
+            "surname": "Bond",
+            "nickname": "Mein name ist",
+            "rating": 1200
+        }
+    ]
+
+### Create a new player [POST]
++ Request (application/json)
+    {
+        "first_name": "Enrico",
+        "surname": "Palazzo",
+        "nickname": "Der große"
+    }
++ Response 200
+
+## Single Player [/players/{player_id}]
++ Parameters
+    + player_id (number) - numeric ID of the player
+
+### Get single player [GET]
++ Response 200 (application/json)
+    {
+        "id": 7,
+        "first_name": "James",
+        "surname": "Bond",
+        "nickname": "Mein name ist",
+        "rating": 1200
+    }
+
+# Group matches
+
+Resources related to matches
+
+## Matches collection [/matches]
+
+### List all matches [GET]
++ Response 200 (application/json)
+    [
+        {
+            "id": 1,
+            "team_1": 1,
+            "team_2": 2,
+            "timestamp": "2019-10-10T10:01:35"
+        }
+    ]
+
+### Create a new match [POST]
+Receives four player ids, returns match id
+
++ Request (application/json)
+    [ 1, 2, 3, 4 ]
++ Response 200 (application/json)
+    { "id": 1 }
+
+## Games [/matches/{match_id}/games]
++ Parameters
+    + match_id (number) - numeric ID of the match
+
+### Add game to a match [PUT]
++ Request (application/json)
+    {
+        "score_team_1": 5,
+        "score_team_2": 3
+    }
++ Response 200
