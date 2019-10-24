@@ -6,7 +6,7 @@ COPY Cargo.toml Cargo.lock ./
 RUN mkdir src/ \
     && echo "fn main() { }" > src/main.rs \
     && cargo build --release \
-    && rm ./target/x86_64-unknown-linux-musl/release/deps/kicker_api*
+    && rm ./target/x86_64-unknown-linux-musl/release/deps/hkick_api*
 # Caching rust dependencies end
 
 COPY src ./src
@@ -17,9 +17,9 @@ RUN cargo build --release
 FROM docker.io/alpine:latest
 WORKDIR /usr/src/app
 
-COPY --from=builder /home/rust/src/target/x86_64-unknown-linux-musl/release/kicker-api /usr/src/app/kicker-api
+COPY --from=builder /home/rust/src/target/x86_64-unknown-linux-musl/release/hkick-api /usr/src/app/hkick-api
 COPY Rocket.toml ./
 
 VOLUME [ "/usr/src/app/database" ]
 EXPOSE 8000
-CMD ["/usr/src/app/kicker-api"]
+CMD ["/usr/src/app/hkick-api"]
