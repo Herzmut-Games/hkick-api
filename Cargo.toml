@@ -9,9 +9,9 @@ edition = "2018"
 [dependencies]
 rocket = "0.4.2"
 serde = "1.0.101"
-serde_json = "1.0.40"
+serde_json = "1.0.41"
 serde_derive = "1.0.101"
-diesel = { version = "1.4.2", features = ["sqlite", "chrono"] }
+diesel = { version = "1.4.3", features = ["sqlite", "chrono"] }
 diesel_migrations = "1.4.0"
 chrono = { version = "0.4.9", features = ["serde"] }
 
