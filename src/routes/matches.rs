@@ -38,18 +38,27 @@ pub fn create(
         team_2: balanced_teams.1.id,
     };
 
-    match diesel::insert_into(matches)
+    diesel::insert_into(matches)
         .values(&new_match)
         .execute(&*conn)
         .map_err(|_| ApiError::new("Could not create match", 500))
         .and_then(|_| get_match_id(&new_match, &*conn))
-    {
-        Ok(matchid) => Ok(json!({ "id": matchid })),
-        Err(e) => Err(e),
-    }
+        .map(|matchid| json!({ "id": matchid }))
+}
+
+#[get("/<id_match>")]
+pub fn get_by_id(conn: DbConn, id_match: i32) -> Result<JsonValue, ApiError> {
+    matches
+        .find(id_match)
+        .first::<Match>(&*conn)
+        .map(|g| json!(g))
+        .map_err(|_| ApiError::new("Could not find match", 404))
 }
 
 #[get("/")]
-pub fn all_matches(conn: DbConn) -> JsonValue {
-    json!(matches.load::<Match>(&*conn).unwrap())
+pub fn get_all(conn: DbConn) -> Result<JsonValue, ApiError> {
+    matches
+        .load::<Match>(&*conn)
+        .map(|result| json!(result))
+        .map_err(|_| ApiError::new("Error fetching matches", 500))
 }

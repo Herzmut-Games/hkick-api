@@ -53,20 +53,14 @@ pub fn find_teams(
     conn: &SqliteConnection,
     player_ids: &[i32; 4],
 ) -> Result<(Team, Team), ApiError> {
-    let players_to_match = match players
+    let players_to_match = players
         .filter(players_id.eq(player_ids[0]))
         .or_filter(players_id.eq(player_ids[1]))
         .or_filter(players_id.eq(player_ids[2]))
         .or_filter(players_id.eq(player_ids[3]))
         .order(players_rating.desc())
         .load::<Player>(conn)
-    {
-        Err(e) => {
-            println!("SQL Error: {}", e);
-            return Err(ApiError::new("Could not get all players", 500));
-        }
-        Ok(ps) => ps,
-    };
+        .map_err(|_| ApiError::new("Could not get all players", 500))?;
 
     let new_teams = match players_to_match.len() {
         4 => balance_teams([

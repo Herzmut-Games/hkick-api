@@ -17,12 +17,11 @@ pub fn single_player(
     conn: DbConn,
     player_id: i32,
 ) -> Result<JsonValue, ApiError> {
-    let p = players.find(player_id).load::<Player>(&*conn).unwrap();
-
-    match p.len() {
-        1 => Ok(json!(p.first())),
-        _ => Err(ApiError::new("Player not found", 404)),
-    }
+    players
+        .find(player_id)
+        .first::<Player>(&*conn)
+        .map(|p| json!(p))
+        .map_err(|_| ApiError::new("Player not found", 404))
 }
 
 #[post("/", format = "json", data = "<player_data>")]
@@ -30,11 +29,9 @@ pub fn create(
     conn: DbConn,
     player_data: Json<NewPlayer>,
 ) -> Result<Status, ApiError> {
-    match diesel::insert_into(players)
+    diesel::insert_into(players)
         .values(&player_data.into_inner())
         .execute(&*conn)
-    {
-        Ok(_) => Ok(Status::new(200, "User created")),
-        Err(_) => Err(ApiError::new("Could not create player", 500)),
-    }
+        .map(|_| Status::new(200, "User created"))
+        .map_err(|_| ApiError::new("Could not create player", 500))
 }
