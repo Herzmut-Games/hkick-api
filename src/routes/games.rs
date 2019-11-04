@@ -1,12 +1,28 @@
 use crate::errors::ApiError;
 use crate::models::games::*;
+use crate::models::matches::*;
 use crate::rating::*;
 use crate::schema::games::dsl::*;
+use crate::schema::matches::dsl::matches;
 use crate::DbConn;
 
 use diesel::prelude::*;
 use rocket::http::Status;
-use rocket_contrib::json::Json;
+use rocket_contrib::json::{Json, JsonValue};
+
+#[get("/<id_match>/games")]
+pub fn get_all_for_match(
+    conn: DbConn,
+    id_match: i32,
+) -> Result<JsonValue, ApiError> {
+    matches
+        .find(id_match)
+        .first::<Match>(&*conn)
+        .map_err(|_| ApiError::new("Could not find match", 404))?
+        .get_games(&*conn)
+        // Map resulting games to json result
+        .map(|g| json!(g))
+}
 
 // This is mounted in /matches
 #[put("/<id_match>/games", format = "json", data = "<game_result>")]

@@ -6,7 +6,7 @@ use crate::schema::matches::dsl::*;
 
 use diesel::{prelude::*, SqliteConnection};
 
-#[derive(serde_derive::Deserialize, Queryable)]
+#[derive(serde_derive::Deserialize, serde_derive::Serialize, Queryable)]
 pub struct Game {
     pub id: i32,
     pub match_id: i32,

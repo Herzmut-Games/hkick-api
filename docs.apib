@@ -62,6 +62,7 @@ Resources related to matches
         }
     ]
 
+
 ### Create a new match [POST]
 Receives four player ids, returns match id
 
@@ -69,6 +70,19 @@ Receives four player ids, returns match id
     [ 1, 2, 3, 4 ]
 + Response 200 (application/json)
     { "id": 1 }
+
+## Single Match [/matches/{match_id}]
++ Parameters
+    + match_id (number) - numeric ID of the match
+
+### Get single match [GET]
++ Response 200 (application/json)
+    {
+        "id": 1,
+        "team_1": 1,
+        "team_2": 2,
+        "timestamp": "2019-10-10T10:01:35"
+    }
 
 ## Games [/matches/{match_id}/games]
 + Parameters
@@ -81,3 +95,13 @@ Receives four player ids, returns match id
         "score_team_2": 3
     }
 + Response 200
+
+### Get all games of match [GET]
++ Response 200 (application/json)
+    {
+        "id": 8,
+        "match_id": 2,
+        "score_team_1": 5,
+        "score_team_2": 3,
+        "timestamp": "2019-10-29T12:48:25"
+    }

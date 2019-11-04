@@ -1,11 +1,12 @@
 use crate::errors::ApiError;
+use crate::models::games::*;
 use crate::models::teams::*;
-use crate::schema::{matches, teams::dsl::*};
+use crate::schema::{games::dsl::*, matches, teams::dsl::*};
 
 use diesel::{prelude::*, SqliteConnection};
 
 #[derive(
-    serde_derive::Deserialize, Clone, Queryable, serde_derive::Serialize,
+    serde_derive::Serialize, serde_derive::Deserialize, Clone, Queryable,
 )]
 pub struct Match {
     pub id: i32,
@@ -33,6 +34,16 @@ impl Match {
             .find(self.team_2)
             .first(conn)
             .map_err(|_| ApiError::new("Could not find team_2 of match", 404))
+    }
+
+    pub fn get_games(
+        &self,
+        conn: &SqliteConnection,
+    ) -> Result<Vec<Game>, ApiError> {
+        games
+            .filter(match_id.eq(self.id))
+            .get_results(conn)
+            .map_err(|_| ApiError::new("Could not get games for match", 404))
     }
 }
 
