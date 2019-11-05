@@ -6,6 +6,7 @@
         "serayuzgur.crates",
         "bungcip.better-toml",
         "vncz.vscode-apielements",
-        "develiteio.api-blueprint-viewer"
+        "develiteio.api-blueprint-viewer",
+        "vadimcn.vscode-lldb"
     ],
 }
