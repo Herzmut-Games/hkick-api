@@ -6,7 +6,8 @@ CREATE TABLE players
   first_name VARCHAR NOT NULL,
   surname VARCHAR NOT NULL,
   nickname VARCHAR NOT NULL,
-  rating INTEGER NOT NULL DEFAULT 1000
+  team_rating INTEGER NOT NULL DEFAULT 1000,
+  solo_rating INTEGER NOT NULL DEFAULT 1000
 );
 
 CREATE TABLE teams
@@ -29,34 +30,35 @@ CREATE TABLE matches
   CHECK (team_1 != team_2)
 );
 
+CREATE TABLE duels
+(
+  id INTEGER PRIMARY KEY NOT NULL,
+  player_1 INTEGER NOT NULL REFERENCES players(id),
+  player_2 INTEGER NOT NULL REFERENCES players(id),
+  timestamp DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
+
+  CHECK (player_1 != player_2)
+);
+
 CREATE TABLE games
 (
   id INTEGER PRIMARY KEY NOT NULL,
-  match_id INTEGER NOT NULL REFERENCES matches(id),
-  score_team_1 INTEGER NOT NULL,
-  score_team_2 INTEGER NOT NULL,
+  match_id INTEGER REFERENCES matches(id),
+  duel_id INTEGER REFERENCES duels(id),
+  score_1 INTEGER NOT NULL,
+  score_2 INTEGER NOT NULL,
   timestamp DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
 
-  CHECK (score_team_1 != score_team_2)
+  CHECK (score_1 != score_2)
 );
 
 INSERT INTO
   players
-  (first_name, surname, nickname, rating)
+  (first_name, surname, nickname)
 VALUES
-  ('Marvin', 'Altemeier', 'Marv', 1200),
-  ('Patrick', 'Schaffrath', 'PatMan', 1000),
-  ('Joshua', 'Grimm', 'Joshi', 1000),
-  ('Robert', 'Mueller', 'Robert', 800);
-
-INSERT INTO
-  teams
-  (player_1, player_2)
-VALUES
-  (1, 2),
-  (3, 4);
-
-INSERT INTO matches
-  (team_1, team_2)
-VALUES
-  (1, 2);
+  ('Marvin', 'Altemeier', 'Marv'),
+  ('Patrick', 'Schaffrath', 'Patrick'),
+  ('Joshua', 'Grimm', 'Joshi'),
+  ('Robert', 'Müller', 'Robert'),
+  ('Anni', 'Iltgen', 'Anni'),
+  ('Christopher', 'Stöckl', 'Stöckl');

@@ -3,3 +3,4 @@ DROP TABLE teams;
 DROP TABLE games;
 DROP TABLE players;
 DROP TABLE matches;
+DROP TABLE duels;

@@ -26,7 +26,7 @@ pub fn expected_score(rating_a: i32, rating_b: i32) -> f32 {
     1_f32 / (1_f32 + 10_f32.powf((rating_b - rating_a) as f32 / 400_f32))
 }
 
-pub fn game(
+pub fn calc_elo(
     rating_a: i32,
     rating_b: i32,
     game_score: GameResult,
@@ -51,7 +51,7 @@ mod test {
         let john = 1700;
         let paul = 1800;
 
-        let (john, paul) = game(paul, john, GameResult::Win);
+        let (john, paul) = calc_elo(paul, john, GameResult::Win);
         assert_eq!(john, 1811);
         assert_eq!(paul, 1689);
     }

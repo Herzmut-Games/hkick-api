@@ -18,7 +18,8 @@ Resources related to Players
             "first_name": "James",
             "surname": "Bond",
             "nickname": "Mein name ist",
-            "rating": 1200
+            "team_rating": 1200
+            "solo_rating": 1200
         }
     ]
 
@@ -42,7 +43,8 @@ Resources related to Players
         "first_name": "James",
         "surname": "Bond",
         "nickname": "Mein name ist",
-        "rating": 1200
+        "team_rating": 1200
+        "solo_rating": 1200
     }
 
 # Group matches
@@ -91,8 +93,8 @@ Receives four player ids, returns match id
 ### Add game to a match [PUT]
 + Request (application/json)
     {
-        "score_team_1": 5,
-        "score_team_2": 3
+        "score_1": 5,
+        "score_2": 3
     }
 + Response 200
 
@@ -101,7 +103,72 @@ Receives four player ids, returns match id
     {
         "id": 8,
         "match_id": 2,
-        "score_team_1": 5,
-        "score_team_2": 3,
+        "duel_id": null,
+        "score_1": 5,
+        "score_2": 3,
         "timestamp": "2019-10-29T12:48:25"
     }
+
+# Group duels
+
+Resources related to duels
+
+## Duels collection [/duels]
+
+### List all matches [GET]
++ Response 200 (application/json)
+    [
+        {
+            "id": 1,
+            "player_1": 1,
+            "player_2": 2,
+            "timestamp": "2019-10-10T10:01:35"
+        }
+    ]
+
+
+### Create a new duel [POST]
+Receives two player ids, returns duel id
+
++ Request (application/json)
+    [ 1, 2 ]
++ Response 200 (application/json)
+    { "id": 1 }
+
+## Single Duel [/duels/{duel_id}]
++ Parameters
+    + duel_id (number) - numeric ID of the duel
+
+### Get single Duel [GET]
++ Response 200 (application/json)
+    {
+        "id": 1,
+        "player_1": 1,
+        "player_2": 2,
+        "timestamp": "2019-10-10T10:01:35"
+    }
+
+## Games [/duels/{duel_id}/games]
++ Parameters
+    + duel_id (number) - numeric ID of the duel
+
+### Add game to a duel [PUT]
++ Request (application/json)
+    {
+        "score_1": 5,
+        "score_2": 3
+    }
++ Response 200
+
+### Get all games of duel [GET]
++ Response 200 (application/json)
+    [
+        {
+            "id": 8,
+            "duel_id": 2,
+            "match_id": null,
+            "score_1": 5,
+            "score_2": 3,
+            "timestamp": "2019-10-29T12:48:25"
+        }
+    ]

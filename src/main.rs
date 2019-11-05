@@ -25,19 +25,29 @@ fn rocket() -> Rocket {
         .mount(
             "/players",
             routes![
+                routes::players::create,
                 routes::players::single_player,
                 routes::players::all_players,
-                routes::players::create
             ],
         )
         .mount(
             "/matches",
             routes![
+                routes::matches::create,
                 routes::matches::get_all,
                 routes::matches::get_by_id,
-                routes::matches::create,
-                routes::games::place_game,
-                routes::games::get_all_for_match
+                routes::games::match_get_all,
+                routes::games::match_place_game,
+            ],
+        )
+        .mount(
+            "/duels",
+            routes![
+                routes::duels::create,
+                routes::duels::get_all,
+                routes::duels::get_by_id,
+                routes::games::duel_get_all,
+                routes::games::duel_place_game,
             ],
         )
 }
