@@ -5,7 +5,9 @@
 #[macro_use] extern crate rocket_contrib;
 
 use diesel::prelude::*;
+use rocket::http::Method;
 use rocket::Rocket;
+use rocket_cors::{AllowedHeaders, AllowedOrigins, Cors, CorsOptions};
 
 pub mod elo;
 pub mod errors;
@@ -18,9 +20,37 @@ pub mod schema;
 #[database("sqlite_database")]
 pub struct DbConn(SqliteConnection);
 
+fn prepare_cors() -> Cors {
+    let allowed_origins = AllowedOrigins::some_exact(&[
+        // 8100 is the default port of hkick-admin
+        "http://localhost:8100",
+        "http://localhost:8080",
+        "http://localhost:8000",
+        "https://hkick-admin.marv.sexy",
+    ]);
+
+    CorsOptions {
+        allowed_origins,
+        allowed_methods: vec![Method::Get]
+            .into_iter()
+            .map(From::from)
+            .collect(),
+        allowed_headers: AllowedHeaders::some(&[
+            "Authorization",
+            "Accept",
+            "Access-Control-Allow-Origin",
+        ]),
+        allow_credentials: true,
+        ..Default::default()
+    }
+    .to_cors()
+    .expect("error building CORS")
+}
+
 fn rocket() -> Rocket {
     rocket::ignite()
         .attach(DbConn::fairing())
+        .attach(prepare_cors())
         .mount("/", routes![])
         .mount(
             "/players",

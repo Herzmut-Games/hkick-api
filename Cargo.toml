@@ -14,6 +14,7 @@ serde_derive = "1.0.101"
 diesel = { version = "1.4.3", features = ["sqlite", "chrono"] }
 diesel_migrations = "1.4.0"
 chrono = { version = "0.4.9", features = ["serde"] }
+rocket_cors = "0.5.1"
 
 # Required for alpine build
 libsqlite3-sys = { version = "*", features = ["bundled"] }
